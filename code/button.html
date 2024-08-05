@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Budget Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    
+    input[type="submit"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    #expenseList {
+      margin-top: 20px;
+    }
+    
+    #expenseList ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    #expenseList li {
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 3px;
+      margin-bottom: 5px;
+    }
+    
+    #expenseList li span {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    
+    #savingsGoal {
+      margin-top: 20px;
+    }
+    
+    #savingsGoal p {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    #savingsGoal span {
+      font-weight: normal;
+    }
+    
+    #savingsGoal .progress-bar {
+      height: 20px;
+      background-color: #f5f5f5;
+      border-radius: 3px;
+    }
+    
+    #savingsGoal .progress-bar .progress {
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Budget Management</h2>
+    <form id="budgetForm">
+      <div class="form-group">
+        <label for="income">Income:</label>
+        <input type="number" id="income" placeholder="Enter your income" required>
+      </div>
+      <div class="form-group">
+        <label for="expenseName">Expense Name:</label>
+        <input type="text" id="expenseName" placeholder="Enter the expense name" required>
+      </div>
+      <div class="form-group">
+        <label for="expenseAmount">Expense Amount:</label>
+        <input type="number" id="expenseAmount" placeholder="Enter the expense amount" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Add Expense" onclick="addExpense(event)">
+      </div>
+    </form>
+    <div id="expenseList">
+      <h3>Expense List:</h3>
+      <ul id="expenses"></ul>
+    </div>
+    <div id="savingsGoal">
+      <h3>Savings Goal:</h3>
+      <p>Enter your savings goal:</p>
+      <div class="form-group">
+        <input type="number" id="savingsGoalInput" placeholder="Enter your savings goal amount">
+        <input type="submit" value="Set Goal" onclick="setSavingsGoal(event)">
+      </div>
+      <p>Goal: $<span id="goalAmount"></span></p>
+      <p>Saved: $<span id="savedAmount"></span></p>
+      <div class="progress-bar">
+        <div class="progress" id="savingsProgress"></div>
+      </div>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    var expenses = [];
+    var savingsGoal = 0;
+    var savedAmount = 0;
+
+    function addExpense(event) {
+      event.preventDefault();
+
+      var expenseName = document.getElementById('expenseName').value;
+      var expenseAmount = parseFloat(document.getElementById('expenseAmount').value);
+
+      if (!expenseName || !expenseAmount) {
+        alert('Please enter both the expense name and amount.');
+        return;
+      }
+
+      var expense = {
+        name: expenseName,
+        amount: expenseAmount
+      };
+
+      expenses.push(expense);
+      document.getElementById('expenses').innerHTML += "<li><span>" + expense.name + ":</span> $" + expense.amount.toFixed(2) + "</li>";
+      updateBudget();
+      resetForm();
+    }
+
+    function updateBudget() {
+      var income = parseFloat(document.getElementById('income').value);
+      var totalExpenses = expenses.reduce(function (total, expense) {
+        return total + expense.amount;
+      }, 0);
+      var balance = income - totalExpenses;
+
+      document.getElementById('result').innerHTML = "<h3>Budget Result:</h3>";
+      document.getElementById('result').innerHTML += "<p>Income: $" + income.toFixed(2) + "</p>";
+      document.getElementById('result').innerHTML += "<p>Total Expenses: $" + totalExpenses.toFixed(2) + "</p>";
+      document.getElementById('result').innerHTML += "<p>Balance: $" + balance.toFixed(2) + "</p>";
+
+      updateSavingsGoal(balance);
+    }
+
+    function updateSavingsGoal(balance) {
+      var goalAmountElement = document.getElementById('goalAmount');
+      var savedAmountElement = document.getElementById('savedAmount');
+      var savingsProgressElement = document.getElementById('savingsProgress');
+
+      goalAmountElement.textContent = savingsGoal.toFixed(2);
+      savedAmountElement.textContent = savedAmount.toFixed(2);
+
+      if (savingsGoal === 0) {
+        savingsProgressElement.style.width = "0%";
+      } else {
+        var progressPercentage = (savedAmount / savingsGoal) * 100;
+        savingsProgressElement.style.width = progressPercentage.toFixed(2) + "%";
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('expenseName').value = "";
+      document.getElementById('expenseAmount').value = "";
+    }
+
+    function setSavingsGoal(event) {
+      event.preventDefault();
+
+      var goalInput = parseFloat(document.getElementById('savingsGoalInput').value);
+
+      if (!isNaN(goalInput) && goalInput >= 0) {
+        savingsGoal = goalInput;
+        updateSavingsGoal();
+        document.getElementById('savingsGoalInput').value = "";
+      } else {
+        alert('Please enter a valid savings goal amount.');
+      }
+    }
+  </script>
+</body>
+</html>

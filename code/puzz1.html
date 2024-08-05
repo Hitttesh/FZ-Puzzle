@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            background-image: url('background2.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+
+        #p1 {
+            background-color: rgb(3, 3, 3);
+            opacity: 0.8;
+        }
+
+        #m1 {
+            position: absolute;
+            top: 200px;
+            left: 600px;
+            border: 1px solid #000000;
+            z-index: 1;
+        }
+
+        #m2 {
+            position: absolute;
+            top: 380px;
+            left: 925px;
+            border: 0px solid #ffffff;
+            z-index: 2;
+        }
+
+        question {
+            position: absolute;
+            top: 620px;
+            left: 710px;
+        }
+
+        #error-message {
+            color: rgb(0, 0, 0);
+            font-size: 28px;
+            display: none;
+            position: absolute;
+            top: 200px;
+            left: 59px;
+            background-color:#ffffff ;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <br><br>
+    <h1 id="p1" style="text-align: center;background-color: black; color: red;">Find the empty box</h1>
+    <img id="m1" src="mathsboxpz1.png">
+    <a href="puzz2.html"><img id="m2" src="mathspz2.png"></a><br><br>
+    <question>
+        <h2 style="color: #ffffff;background-color: #000000;">Enter your answer : </h2>
+        <input type="text" id="pz1ans" name="fname" placeholder="type here"
+            style="border:4px solid #000000;width: 200px;height: 30px;">
+        <br /><br>
+        <center>
+            <button type="submit" id="submit-answer"
+                style="width: 110px;height: 40px; background-color: yellow; border-color: #000000;border:4px solid #000000;"><b>SUBMIT</b></button>
+        </center>
+        <div id="error-message"></div>
+    </question>
+    <script>
+        const submitBtn = document.getElementById("submit-answer");
+        const errorMessage = document.getElementById("error-message");
+
+        submitBtn.addEventListener("click", function () {
+            errorMessage.style.display = "block";
+            errorMessage.innerHTML = "Wrong answer!";
+        });
+    </script>
+</body>
+
+</html>
